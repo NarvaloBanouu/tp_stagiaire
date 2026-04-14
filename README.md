@@ -179,8 +179,4 @@ Q3: "Peut-elle se le permettre ?"
 
 ## Auteur
 
-Projet réalisé dans le cadre du TP Agent LangChain.
-
-## Licence
-
-Projet éducatif.
+Esteban PAGIS (dans le cadre du projet tp_stagiaire.pdf)
