@@ -5,11 +5,11 @@ echo "========================================="
 echo "AGENT LANGCHAIN - MENU DE LANCEMENT"
 echo "========================================="
 echo ""
-echo "1. Mode Console (original)"
+echo "1. Mode Console (terminal interactif)"
 echo "2. Mode Streamlit (interface web)"
-echo "3. Mode API REST (serveur)"
-echo "4. Test mémoire conversationnelle"
-echo "5. Initialiser/réinitialiser la base de données"
+echo "3. Mode API REST (serveur FastAPI)"
+echo "4. Initialiser la base clients/produits"
+echo "5. Initialiser la base portefeuille (D1)"
 echo ""
 read -p "Votre choix (1-5): " choice
 
@@ -30,12 +30,12 @@ case $choice in
     python3 api.py
     ;;
   4)
-    echo "Lancement du test de mémoire..."
-    python3 test_memoire.py
+    echo "Initialisation de la base de données clients/produits..."
+    python3 init_db.py
     ;;
   5)
-    echo "Initialisation de la base de données..."
-    python3 init_db.py
+    echo "Initialisation de la base de données portefeuille..."
+    python3 init_portfolio_db.py
     ;;
   *)
     echo "Choix invalide"

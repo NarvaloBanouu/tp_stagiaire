@@ -95,7 +95,7 @@ def init_portfolio_database():
     conn.commit()
     conn.close()
 
-    print('\n✅ Base de données portfolio.db créée avec succès')
+    print('\n[OK] Base de données portfolio.db créée avec succès')
     print('   - Table positions : portefeuille des clients')
     print('   - Table market_history : historique des cours')
 

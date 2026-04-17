@@ -1,61 +1,73 @@
-# Cet outil simule un flux de données financières en temps réel 
-# (cours d'actions, cryptomonnaies). Il génère des variations aléatoires 
-# pour simuler le comportement réel des marchés.
+# Cet outil récupère les cours boursiers et cryptomonnaies en temps réel
+# via la bibliothèque yfinance (Yahoo Finance).
 
+import yfinance as yf
 
-
-import random, datetime
- 
+# Mapping symbole utilisateur -> (symbole Yahoo Finance, nom)
+# Les actions européennes utilisent un suffixe de marché sur Yahoo Finance
 ACTIONS = {
-    "AAPL":  { "nom": "Apple Inc.",       "prix_base": 182.50 },
-    "MSFT":  { "nom": "Microsoft Corp.",   "prix_base": 415.20 },
-    "GOOGL": { "nom": "Alphabet (Google)", "prix_base": 175.80 },
-    "LVMH":  { "nom": "LVMH Moët Hennessy","prix_base": 750.00 },
-    "TSLA":  { "nom": "Tesla Inc.",         "prix_base": 248.00 },
-    "AIR":   { "nom": "Airbus SE",          "prix_base": 168.40 },
+    "AAPL":  ("AAPL",  "Apple Inc."),
+    "MSFT":  ("MSFT",  "Microsoft Corp."),
+    "GOOGL": ("GOOGL", "Alphabet (Google)"),
+    "LVMH":  ("MC.PA", "LVMH Moet Hennessy"),
+    "TSLA":  ("TSLA",  "Tesla Inc."),
+    "AIR":   ("AIR.PA","Airbus SE"),
 }
- 
+
 CRYPTOS = {
-    "BTC": { "nom": "Bitcoin",  "prix_base": 67500.00 },
-    "ETH": { "nom": "Ethereum", "prix_base": 3200.00  },
-    "SOL": { "nom": "Solana",   "prix_base": 175.00   },
+    "BTC":  "Bitcoin",
+    "ETH":  "Ethereum",
+    "SOL":  "Solana",
+    "BNB":  "BNB",
+    "DOGE": "Dogecoin",
 }
- 
+
+
 def obtenir_cours_action(symbole: str) -> str:
-    """Retourne le cours simulé d'une action avec sa variation (+/-3%)."""
+    """Retourne le cours reel d'une action via yfinance avec variation du jour et volume."""
     symbole = symbole.strip().upper()
-    if symbole not in ACTIONS:
-        return f"Action '{symbole}' non trouvée."
-    action = ACTIONS[symbole]
-    variation_pct = random.uniform(-3.0, 3.0)   # Variation aléatoire
-    cours = action['prix_base'] * (1 + variation_pct / 100)
-    tendance = '📈' if variation_pct >= 0 else '📉'
-    return f"{symbole} {tendance} : {cours:.2f} $ ({variation_pct:+.2f}%)"
+    if symbole in ACTIONS:
+        yf_symbole, nom = ACTIONS[symbole]
+    else:
+        yf_symbole, nom = symbole, symbole
+    try:
+        ticker = yf.Ticker(yf_symbole)
+        info = ticker.history(period="2d")
+        if info.empty:
+            return f"Action '{symbole}' : donnees indisponibles ou symbole invalide."
+        cours = info['Close'].iloc[-1]
+        volume = info['Volume'].iloc[-1]
+        if len(info) >= 2:
+            cours_veille = info['Close'].iloc[-2]
+            variation_pct = ((cours - cours_veille) / cours_veille) * 100
+        else:
+            ouverture = info['Open'].iloc[-1]
+            variation_pct = ((cours - ouverture) / ouverture) * 100
+        tendance = 'UP' if variation_pct >= 0 else 'DOWN'
+        return f"{symbole} ({nom}) [{tendance}] : {cours:.2f} ({variation_pct:+.2f}%) | Volume : {volume:,}"
+    except Exception as e:
+        return f"Erreur pour '{symbole}' : {str(e)}"
 
-    
+
 def obtenir_cours_crypto(symbole: str) -> str:
-    """Retourne le cours simulé d'une cryptomonnaie avec sa variation (+/-5%)."""
+    """Retourne le cours reel d'une cryptomonnaie via yfinance avec variation du jour et volume."""
     symbole = symbole.strip().upper()
-    if symbole not in CRYPTOS:
-        return f"Crypto '{symbole}' non trouvée."
-    crypto = CRYPTOS[symbole]
-    variation_pct = random.uniform(-5.0, 5.0)   # Variation aléatoire plus forte
-    cours = crypto['prix_base'] * (1 + variation_pct / 100)
-    tendance = '📈' if variation_pct >= 0 else '📉'
-    return f"{symbole} {tendance} : {cours:.2f} $ ({variation_pct:+.2f}%)"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    yf_symbole = f"{symbole}-USD"
+    try:
+        ticker = yf.Ticker(yf_symbole)
+        info = ticker.history(period="2d")
+        if info.empty:
+            return f"Crypto '{symbole}' : donnees indisponibles ou symbole invalide."
+        cours = info['Close'].iloc[-1]
+        volume = info['Volume'].iloc[-1]
+        if len(info) >= 2:
+            cours_veille = info['Close'].iloc[-2]
+            variation_pct = ((cours - cours_veille) / cours_veille) * 100
+        else:
+            ouverture = info['Open'].iloc[-1]
+            variation_pct = ((cours - ouverture) / ouverture) * 100
+        tendance = 'UP' if variation_pct >= 0 else 'DOWN'
+        nom = CRYPTOS.get(symbole, symbole)
+        return f"{symbole} ({nom}) [{tendance}] : {cours:.2f} $ ({variation_pct:+.2f}%) | Volume : {volume:,}"
+    except Exception as e:
+        return f"Erreur pour '{symbole}' : {str(e)}"

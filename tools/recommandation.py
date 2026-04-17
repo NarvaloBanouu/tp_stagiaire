@@ -34,6 +34,6 @@ def recommander_produits(input_str: str) -> str:
     filtres.sort(key=lambda x: x['score'], reverse=True)
     result = f"Recommandations (budget {budget:.0f}€, {categorie}, {type_compte}) :\n"
     for i, p in enumerate(filtres[:5], 1):
-        result += f"  {i}. {p['nom']} – {p['prix']:.2f}€ – ⭐{p['score']}\n"
+        result += f"  {i}. {p['nom']} – {p['prix']:.2f}€ – score {p['score']}\n"
     return result
 

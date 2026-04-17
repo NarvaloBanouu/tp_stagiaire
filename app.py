@@ -54,7 +54,10 @@ if prompt := st.chat_input("Votre question..."):
     with st.chat_message("assistant"):
         with st.spinner("Réflexion en cours..."):
             try:
-                response = st.session_state.agent.invoke({"input": prompt})
+                response = st.session_state.agent.invoke(
+                    {"input": prompt},
+                    config={"configurable": {"session_id": "streamlit-session"}}
+                )
                 answer = response['output']
                 st.markdown(answer)
                 st.session_state.messages.append({"role": "assistant", "content": answer})
