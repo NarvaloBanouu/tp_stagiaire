@@ -1,3 +1,6 @@
+# Cet outil appelle l'API publique gratuite Frankfurter (api.frankfurter.app)
+# pour récupérer les taux de change officiels de la Banque Centrale Européenne.
+# Aucune clé d'authentification n'est nécessaire.
 
 
 import requests

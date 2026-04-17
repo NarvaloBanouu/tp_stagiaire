@@ -1,3 +1,10 @@
+# Cet outil effectue des calculs financiers 
+# courants : TVA, intérêts composés, marge commerciale, et mensualités de prêt.
+# Il accepte des paramètres séparés par des virgules.
+
+
+
+
 def calculer_tva(input_str: str) -> str:
     """Calcule TVA et prix TTC. Entrée : "prix_ht,taux_tva" ex: "100,20" """
     parties = input_str.strip().split(',')
@@ -17,15 +24,8 @@ def calculer_interets_composes(input_str: str) -> str:
 
 def calculer_marge(input_str: str) -> str:
     """Marge commerciale. Entrée : "prix_vente,cout_achat" """
-    try:
-        pv, ca = input_str.strip().split(',')
-        prix_vente, cout_achat = float(pv), float(ca)
-    except ValueError:
-        return "Erreur : format attendu prix_vente,cout_achat ex: 1200,899"
-
-    if cout_achat == 0:
-        return "Erreur : coût d'achat ne peut pas être 0"
-
+    pv, ca = input_str.strip().split(',')
+    prix_vente, cout_achat = float(pv), float(ca)
     marge = prix_vente - cout_achat
     taux_marge = (marge / cout_achat) * 100
     return f"Marge : {marge:.2f}€ | Taux de marge : {taux_marge:.1f}%"

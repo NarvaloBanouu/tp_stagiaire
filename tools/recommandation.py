@@ -1,4 +1,11 @@
+# Cet outil propose des recommandations personnalisées 
+# de produits en fonction du budget, 
+# de la catégorie souhaitée
+# et du type de compte client (Standard, Premium, VIP).
+
+
 CATALOGUE = [
+    # id        nom                           prix     catégorie       score  cible
     {'id':'P001','nom':'Ordinateur Pro',     'prix':899.00, 'cat':'Informatique','score':4.7,'cible':['Premium','VIP']},
     {'id':'P002','nom':'Souris ergonomique', 'prix':49.90,  'cat':'Informatique','score':4.4,'cible':['Standard','Premium','VIP']},
     {'id':'P003','nom':'Bureau réglable',    'prix':350.00, 'cat':'Mobilier',    'score':4.5,'cible':['Premium','VIP']},
@@ -9,14 +16,13 @@ CATALOGUE = [
 
 
 def recommander_produits(input_str: str) -> str:
-    try:
-        parts = input_str.strip().split(',')
-        if len(parts) != 3:
-            return "Erreur : format attendu budget,categorie,type_compte"
-        budget, categorie, type_compte = parts
-        budget = float(budget)
-    except ValueError:
-        return "Erreur : budget invalide"
+    """
+    Recommande des produits selon budget, catégorie et type de compte.
+    Entrée : "budget,categorie,type_compte"
+    Exemple : "300,Informatique,Premium"
+    """
+    budget, categorie, type_compte = input_str.strip().split(',')
+    budget = float(budget)
     filtres = [
         p for p in CATALOGUE
         if p['prix'] <= budget

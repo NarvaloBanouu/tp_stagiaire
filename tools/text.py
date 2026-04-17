@@ -1,3 +1,5 @@
+# Cet outil effectue différentes transformations sur du texte :
+# résumé automatique, formatage en rapport, extraction de mots-clés et transformation de casse.
 
 
 import re
